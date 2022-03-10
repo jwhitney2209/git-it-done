@@ -9,10 +9,17 @@ var getUserRepos = function(user) {
 
   // make a get request to url
   fetch(apiUrl).then(function(response) {
-    console.log(response);
-    response.json().then(function(data) {
-      displayRepos(data, user);
-    });
+    if (response.ok) {
+      response.json().then(function(data) {
+        displayRepos(data, user);
+      });
+    } else {
+      alert("Error: GitHub User Not Found");
+    }
+  })
+  .catch(function(error){
+    // notice this '.catch()' getting chained onto the end of the '.then()' method
+    alert("Unable to connect to Github");
   });
 };
 
@@ -40,6 +47,10 @@ var formSubmitHandler = function(event) {
 
 // display response data on page
 var displayRepos = function (repos, searchTerm) {
+  if (repos.length === 0) {
+    repoContainerEl.textContent = "No repositories found.";
+    return;
+  }
   console.log(repos);
   console.log(searchTerm);
   repoContainerEl.textContent = "";
